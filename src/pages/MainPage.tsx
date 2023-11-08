@@ -51,34 +51,42 @@ const MainPage = () => {
       {isPopupModal.isOpen && <Popup />}
       <MainBanner />
       <StCarouselLayout>
-        <Carousel title="티빙에서 꼭 봐야하는 콘텐츠" dataName="programs" />
         <Carousel
-          title="Quick VOD"
+          carouselTitle="티빙에서 꼭 봐야하는 콘텐츠"
+          dataName="programs"
+          isItemTitle={true}
+        />
+        <Carousel
+          carouselTitle="Quick VOD"
           dataName="vod"
           vod={true}
           desktopSlides={5}
           tabletSlides={4}
           mobileSlides={3}
+          isItemTitle={true}
         />
         <Carousel
-          title="실시간 인기 프로그램"
+          carouselTitle="실시간 인기 프로그램"
           dataName="programs"
           number={true}
+          isItemTitle={true}
         />
         <Carousel
-          title="인기 LIVE"
+          carouselTitle="인기 LIVE"
           dataName="live"
           number={true}
           desktopSlides={5}
           tabletSlides={4}
           mobileSlides={3}
+          isItemTitle={true}
         />
         <Carousel
-          title="오직 티빙에만 있어요"
+          carouselTitle="오직 티빙에만 있어요"
           dataName="originals"
           desktopSlides={6}
           tabletSlides={4}
           mobileSlides={2}
+          isItemTitle={true}
         />
         <Carousel
           dataName="mini-banner"
@@ -87,7 +95,7 @@ const MainPage = () => {
           mobileSlides={1}
         />
         <Carousel
-          title="이벤트"
+          carouselTitle="이벤트"
           dataName="event"
           desktopSlides={5}
           tabletSlides={4}

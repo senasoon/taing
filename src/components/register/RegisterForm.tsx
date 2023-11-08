@@ -10,10 +10,9 @@ import {
 import styled from 'styled-components/macro';
 import FormButton from '@/components/button/FormButton';
 import FormInput from '@/components/forminput/FormInput';
-import { useAuthState, useSignUp } from '@/firebase/auth';
+import { useSignUp } from '@/firebase/auth';
 import { useCreateAuthUser } from '@/firebase/firestore';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import LoadingSpinner from '@/components/loading/LoadingSpinner';
 import { IFormState } from '@/types/signForm';
 
 interface DescriptionProps {
@@ -85,7 +84,6 @@ const RegisterForm = (): JSX.Element => {
 
   const { signUp } = useSignUp();
   const { createAuthUser } = useCreateAuthUser();
-  const { isLoading, error } = useAuthState();
 
   const formStateRef = useRef<IFormState>(initialFormState);
   const { email, password, passwordConfirm } = formStateRef.current;
@@ -170,14 +168,6 @@ const RegisterForm = (): JSX.Element => {
     alert('회원가입 및 유저 생성');
     navigate('/main');
   };
-
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
-
-  if (error) {
-    navigate('/*');
-  }
 
   return (
     <>

@@ -5,12 +5,12 @@ import { useEffect, useState } from 'react';
 import SearchModal from '@/components/search/SearchModal';
 import Svg from '@/components/svg/Svg';
 import useThrottle from '@/hooks/useThrottle';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { searchKeywordState } from '@/store/search/index';
 import useModal from '@/hooks/useModal';
 import LogoModal from '@/components/header/LogoModal';
-import { useAuthState } from '@/firebase/auth';
 import StA11yHidden from '@/components/a11yhidden/A11yHidden';
+import { authStateAtom } from '@/store/authState';
 
 interface IHeader {
   backgroundColor?: 'gradient' | 'black';
@@ -130,6 +130,7 @@ const Header = () => {
   const [isBlackBackground, setIsBlackBackground] = useState(false);
   const [searchParams] = useSearchParams();
   const setSearchKeyword = useSetRecoilState(searchKeywordState);
+  const user = useRecoilValue(authStateAtom).user;
   const navigate = useNavigate();
 
   const closeSearchModal = () => {
@@ -159,8 +160,6 @@ const Header = () => {
     window.addEventListener('scroll', throttleScroll);
     return () => window.removeEventListener('scroll', throttleScroll);
   }, []);
-
-  const { user } = useAuthState();
 
   return (
     <>

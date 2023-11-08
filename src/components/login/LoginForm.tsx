@@ -1,11 +1,10 @@
-import { useAuthState, useSignIn } from '@/firebase/auth';
+import { useSignIn } from '@/firebase/auth';
 import { StContainer, StForm, StInner, StTitle } from '@/styles/FormStyles';
 import { getFontStyle, rem } from '@/theme/utils';
-import { useEffect, useRef } from 'react';
-import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import FormInput from '@/components/forminput/FormInput';
-import LoadingSpinner from '@/components/loading/LoadingSpinner';
 import { IFormState } from '@/types/signForm';
 
 const StInfo = styled.p`
@@ -96,8 +95,6 @@ const LoginForm = () => {
   const formStateRef = useRef(initialFormState);
 
   const { isLoading: isLoadingSignIn, signIn } = useSignIn();
-  const { isLoading, error, user } = useAuthState();
-  const navigate: NavigateFunction = useNavigate();
 
   const handleSignIn = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -111,24 +108,6 @@ const LoginForm = () => {
     const { name, value } = e.target;
     formStateRef.current[name] = value;
   };
-
-  useEffect(() => {
-    const handleNavigation = () => {
-      if (isLoading) {
-        return <LoadingSpinner />;
-      }
-
-      if (error) {
-        navigate('/*');
-      }
-
-      if (user) {
-        navigate('/main');
-      }
-    };
-
-    handleNavigation();
-  }, [isLoading, error, user, navigate]);
 
   return (
     <StContainer>

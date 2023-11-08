@@ -1,7 +1,6 @@
 import { StProfileSvg } from '@/styles/ProfileStyles';
 import styled from 'styled-components/macro';
 import { storageService } from '@/firebase/app';
-import { useAuthState } from '@/firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useCreateData } from '@/firebase/firestore/useCreateData';
 import { getFontStyle, rem } from '@/theme/utils';
@@ -9,6 +8,8 @@ import Svg from '@/components/svg/Svg';
 import StA11yHidden from '@/components/a11yhidden/A11yHidden';
 import { useRef, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useRecoilValue } from 'recoil';
+import { authStateAtom } from '@/store/authState';
 
 const StCreateText = styled.h2`
   ${getFontStyle('headingM')};
@@ -154,7 +155,7 @@ const ProfileCreate = () => {
   const navigate = useNavigate();
   const [text, setText] = useState<string>('');
   const [fileImage, setFileImage] = useState<string | null | ArrayBuffer>(null);
-  const { user } = useAuthState();
+  const user = useRecoilValue(authStateAtom).user;
 
   const goToProfilePage = () => {
     navigate('/profile-page');

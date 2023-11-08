@@ -2,11 +2,9 @@ import { rem } from '@/theme/utils';
 import { createGlobalStyle } from 'styled-components/macro';
 
 const GlobalStyle = createGlobalStyle`
-body {
-  background-color : var(--black);
+  body {
   button,
   a {cursor: pointer};
-  color: var(--white);
   }
   body,
   body::before,
@@ -56,9 +54,7 @@ body {
 
     font-size: calc(8px + 0.5vw);
 
-    * {
-      transition: 0.1ms;
-    } 
+
   }
 `;
 

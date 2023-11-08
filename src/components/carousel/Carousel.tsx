@@ -7,9 +7,9 @@ import Svg from '@/components/svg/Svg';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { useReadData } from '@/firebase/firestore';
-import SkeletonCarousel from '@/components/loading/SkeletonCarousel';
 import { IArrow, ICarousel } from '@/types/carousel';
 import { IPrograms } from '@/types/programs';
+import SkeletonCarousel from '@/components/loading/SkeletonCarousel';
 
 const StArrow = styled.button<IArrow>`
   border: 0;
@@ -97,28 +97,6 @@ const StCarouselContainer = styled.section`
     gap: ${rem(5)};
     margin: 0;
   }
-
-  h2 {
-    ${getFontStyle('LabelS')}
-    display: inline-block;
-    margin-right: ${rem(10)};
-    margin-left: ${rem(8)};
-  }
-
-  @media (min-width: 768px) {
-    h2 {
-      ${getFontStyle('headingL')}
-      margin-left: ${rem(40)};
-    }
-  }
-
-  @media (min-width: 1920px) {
-    h2 {
-      ${getFontStyle('headingXL')}
-      margin-right: ${rem(15)};
-      margin-left: ${rem(70)};
-    }
-  }
 `;
 
 const StSlider = styled(Slider)<ICarousel>`
@@ -184,7 +162,6 @@ const StSlider = styled(Slider)<ICarousel>`
     transition: transform 0.3s ease-in-out;
     position: relative;
     padding-right: ${rem(8)};
-
     svg {
       position: absolute;
       top: 5px;
@@ -285,6 +262,9 @@ const StTitle = styled.span<ICarousel>`
     css`
       margin-left: ${rem(10)};
     `}
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const StCount = styled.span`
@@ -308,8 +288,30 @@ const StNumber = styled.span`
   line-height: 0;
 `;
 
+const StImageWrapper = styled.div<{ ratio: string }>`
+  aspect-ratio: ${(props) => props.ratio};
+`;
+
+const StCarouselTitle = styled.h2`
+  ${getFontStyle('LabelS')}
+  display: inline-block;
+  margin-right: ${rem(10)};
+  margin-left: ${rem(8)};
+
+  @media (min-width: 768px) {
+    ${getFontStyle('headingL')}
+    margin-left: ${rem(40)};
+  }
+
+  @media (min-width: 1920px) {
+    ${getFontStyle('headingXL')}
+    margin-right: ${rem(15)};
+    margin-left: ${rem(70)};
+  }
+`;
+
 const Carousel = ({
-  title,
+  carouselTitle,
   count,
   dataName,
   dataProp,
@@ -318,7 +320,34 @@ const Carousel = ({
   desktopSlides = 7,
   vod,
   number,
+  isItemTitle,
 }: ICarousel) => {
+  let ratio: string;
+
+  switch (dataName) {
+    case 'programs':
+      ratio = '16 / 23';
+      break;
+    case 'vod':
+      ratio = '16 / 9';
+      break;
+    case 'live':
+      ratio = '16 / 9';
+      break;
+    case 'originals':
+      ratio = '1 / 2';
+      break;
+    case 'mini-banner':
+      ratio = '1762 / 177';
+      break;
+    case 'event':
+      ratio = '173 / 60';
+      break;
+    default:
+      ratio = '16 / 23';
+      break;
+  }
+
   const sliderRef = useRef<Slider | null>(null);
 
   const handleSlideKeyUp = (
@@ -359,7 +388,7 @@ const Carousel = ({
     ],
   };
 
-  const { isLoading, readData, data } = useReadData(dataName ?? '');
+  const { readData, data } = useReadData(dataName ?? '');
 
   const [searchParams] = useSearchParams();
 
@@ -371,19 +400,17 @@ const Carousel = ({
 
   return (
     <>
-      {(data || dataProp) && (
+      <div>
+        {carouselTitle && <StCarouselTitle>{carouselTitle}</StCarouselTitle>}
+        {count && (
+          <StCount>
+            {(data as IPrograms[])?.length ?? dataProp?.length}개
+          </StCount>
+        )}
+      </div>
+      {data || dataProp ? (
         <StCarouselContainer>
-          <h2>{title}</h2>
-          {count && (
-            <StCount>
-              {(data as IPrograms[])?.length ?? dataProp?.length}개
-            </StCount>
-          )}
-          <StSlider
-            {...settings}
-            ref={sliderRef}
-            data-desktopSlides={desktopSlides}
-          >
+          <StSlider {...settings} ref={sliderRef} desktopSlides={desktopSlides}>
             {((data as IPrograms[]) || dataProp)
               ?.slice(0, 20)
               .map((data, index) => {
@@ -397,20 +424,22 @@ const Carousel = ({
                       }
                       onKeyUp={(e) => handleSlideKeyUp(e, index)}
                     >
-                      <picture>
-                        <source
-                          srcSet={data.desktopUrl}
-                          media="(min-width:1920px)"
-                        />
-                        <source
-                          srcSet={data.tabletUrl}
-                          media="(min-width:768px)"
-                        />
-                        <img
-                          src={data.mobileUrl}
-                          alt={data.title || data.alt}
-                        />
-                      </picture>
+                      <StImageWrapper ratio={ratio}>
+                        <picture>
+                          <source
+                            srcSet={data.desktopUrl}
+                            media="(min-width:1920px)"
+                          />
+                          <source
+                            srcSet={data.tabletUrl}
+                            media="(min-width:768px)"
+                          />
+                          <img
+                            src={data.mobileUrl}
+                            alt={data.title || data.alt}
+                          />
+                        </picture>
+                      </StImageWrapper>
                       <StInfo number={number}>
                         {number && <StNumber>{index + 1}</StNumber>}
                         {data.title && (
@@ -424,8 +453,16 @@ const Carousel = ({
               })}
           </StSlider>
         </StCarouselContainer>
+      ) : (
+        <SkeletonCarousel
+          mobileSlides={mobileSlides}
+          tabletSlides={tabletSlides}
+          desktopSlides={desktopSlides}
+          ratio={ratio}
+          number={number}
+          title={isItemTitle}
+        />
       )}
-      {isLoading && <SkeletonCarousel />}
     </>
   );
 };

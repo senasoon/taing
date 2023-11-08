@@ -74,6 +74,7 @@ const StSlider = styled(Slider)`
   }
 
   .slick-slide {
+    aspect-ratio: 128 / 57;
     &::after {
       content: '';
       position: absolute;
@@ -145,6 +146,8 @@ const StSlider = styled(Slider)`
 
 const StImage = styled.img`
   object-fit: cover;
+  width: 100%;
+  height: 100%;
 `;
 
 const StDescription = styled.span`
@@ -271,25 +274,29 @@ const MainBanner = () => {
 
   return (
     <>
-      {data && (
-        <StSlider ref={sliderRef} {...settings}>
-          {(data as IMainBanner[])?.map((data, index) => {
-            return (
-              <div key={data.id}>
-                <Link
-                  to="/main"
-                  tabIndex={activeSlide === index ? 0 : -1}
-                  onKeyUp={(e) => handleSlideKeyUp(e, index)}
-                >
-                  <StImage src={data.imgUrl} alt={data.title} />
-                  <StDescription>{data.description}</StDescription>
-                </Link>
-              </div>
-            );
-          })}
-        </StSlider>
-      )}
-      {isLoading && <SkeletonBanner />}
+      <StSlider ref={sliderRef} {...settings}>
+        {(data as IMainBanner[])?.map((data, index) => {
+          return (
+            <div key={data.id}>
+              <Link
+                to="/main"
+                tabIndex={activeSlide === index ? 0 : -1}
+                onKeyUp={(e) => handleSlideKeyUp(e, index)}
+              >
+                <StImage
+                  src={data.imgUrl}
+                  alt={data.title}
+                  width={885}
+                  height={394}
+                />
+                <StDescription>{data.description}</StDescription>
+              </Link>
+            </div>
+          );
+        })}
+        {!data &&
+          [...Array(4)].map((_, index) => <SkeletonBanner key={index} />)}
+      </StSlider>
     </>
   );
 };

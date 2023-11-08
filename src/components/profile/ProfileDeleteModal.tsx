@@ -1,9 +1,10 @@
 import Modal from '@/components/modal/Modal';
 import { useNavigate } from 'react-router-dom';
-import { useAuthState } from '@/firebase/auth';
 import { useDeleteData } from '@/firebase/firestore/useDeleteData';
 import { useDeleteFile } from '@/firebase/storage/useDeleteFile';
 import useModal from '@/hooks/useModal';
+import { authStateAtom } from '@/store/authState';
+import { useRecoilValue } from 'recoil';
 
 interface IProfileDeleteModalProps {
   profileId: string;
@@ -14,7 +15,7 @@ const ProfileDeleteModal = ({
   storageID,
 }: IProfileDeleteModalProps) => {
   const navigate = useNavigate();
-  const { user } = useAuthState();
+  const user = useRecoilValue(authStateAtom).user;
   const { deleteData } = useDeleteData('users');
   const { deleteFile } = useDeleteFile();
 

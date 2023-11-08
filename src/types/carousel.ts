@@ -6,7 +6,7 @@ export interface IArrow {
 }
 
 export interface ICarousel {
-  title?: string;
+  carouselTitle?: string;
   count?: boolean;
   dataName?: string;
   dataProp?: IPrograms[];
@@ -15,6 +15,7 @@ export interface ICarousel {
   desktopSlides?: number;
   vod?: boolean;
   number?: boolean;
+  isItemTitle?: boolean;
 }
 
 export interface ICarouselAuto {

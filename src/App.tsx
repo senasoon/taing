@@ -1,80 +1,69 @@
 import { Reset as ResetCss } from 'styled-reset';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import GlobalStyle from './styles/GlobalStyle';
 import Layout from './pages/Layout';
 import MainPage from './pages/MainPage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import LandingPage from './pages/LandingPage';
-import PrivateRoute from './PrivateRoute';
 import NotFound from './pages/NotFound';
 import ProfilePage from './pages/ProfilePage';
 import ProfileCreate from './pages/ProfileCreate';
 import ProfileEdit from './pages/ProfileEdit';
 import SearchPage from './pages/SearchPage';
+import { useAuthState } from './firebase/auth';
+import AuthenticatedRoute from './AuthenticatedRoute';
+import UnauthenticatedRoute from './UnauthenticatedRoute';
+import LoadingSpinner from './components/loading/LoadingSpinner';
 
 const App = () => {
+  const { authState, init } = useAuthState();
+  const isAuthenticated = !!authState.user;
+
+  if (authState.isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (authState.error) {
+    return <Navigate to="/login" replace />;
+  }
+
   return (
     <>
       <BrowserRouter>
         <ResetCss />
         <GlobalStyle />
-        <Routes>
-          <Route element={<Layout />}>
+        {init ? (
+          <Routes>
             <Route
-              index
-              element={
-                <PrivateRoute>
-                  <LandingPage />
-                </PrivateRoute>
-              }
-            />
+              element={<AuthenticatedRoute isAuthenticated={isAuthenticated} />}
+            >
+              <Route element={<Layout />}>
+                <Route path="/profile-page" element={<ProfilePage />} />
+                <Route path="/profile-edit" element={<ProfileEdit />} />
+                <Route path="/profile-create" element={<ProfileCreate />} />
+                <Route path="/main" element={<MainPage />} />
+                <Route path="/search" element={<SearchPage />} />
+              </Route>
+            </Route>
             <Route
-              path="/"
               element={
-                <PrivateRoute>
-                  <LandingPage />
-                </PrivateRoute>
+                <UnauthenticatedRoute isAuthenticated={isAuthenticated} />
               }
-            />
-            <Route path="register" element={<RegisterPage />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route
-              path="profile-page"
-              element={
-                <PrivateRoute>
-                  <ProfilePage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="profile-edit"
-              element={
-                <PrivateRoute>
-                  <ProfileEdit />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="profile-create"
-              element={
-                <PrivateRoute>
-                  <ProfileCreate />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="main"
-              element={
-                <PrivateRoute>
-                  <MainPage />
-                </PrivateRoute>
-              }
-            />
-            <Route path="search" element={<SearchPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
+            >
+              <Route element={<Layout />}>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/login" element={<LoginPage />} />
+              </Route>
+            </Route>
+            <Route element={<Layout />}>
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        ) : (
+          <></>
+        )}
       </BrowserRouter>
     </>
   );

@@ -6,7 +6,6 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { dbService } from '@/firebase/app';
-import { useAuthState } from '@/firebase/auth';
 import StA11yHidden from '@/components/a11yhidden/A11yHidden';
 import ProfileDeleteModal from '@/components/profile/ProfileDeleteModal';
 import {
@@ -18,6 +17,8 @@ import {
 import Svg from '@/components/svg/Svg';
 import { Helmet } from 'react-helmet-async';
 import useModal from '@/hooks/useModal';
+import { useRecoilValue } from 'recoil';
+import { authStateAtom } from '@/store/authState';
 
 interface IProfileNameForm {
   profileId: string;
@@ -32,7 +33,7 @@ const ProfileNameForm = ({
   storageID,
 }: IProfileNameForm) => {
   const [name, setName] = useState<string>(defaultName);
-  const { user } = useAuthState();
+  const user = useRecoilValue(authStateAtom).user;
   const navigate = useNavigate();
   const { modalState: isProfileDeleteModal, openModal } =
     useModal('profile-delete');

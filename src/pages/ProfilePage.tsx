@@ -9,11 +9,12 @@ import {
   StSvg,
 } from '@/styles/ProfileStyles';
 import { useNavigate } from 'react-router-dom';
-import { useAuthState } from '@/firebase/auth';
 import { useEffect, useState } from 'react';
 import { dbService } from '@/firebase/app';
 import { Helmet } from 'react-helmet-async';
 import Svg from '@/components/svg/Svg';
+import { authStateAtom } from '@/store/authState';
+import { useRecoilValue } from 'recoil';
 
 interface IProfile {
   id: string;
@@ -24,7 +25,7 @@ interface IProfile {
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { user } = useAuthState();
+  const user = useRecoilValue(authStateAtom).user;
   const [profiles, setProfiles] = useState<IProfile[]>([]);
   const goToProfileEdit = (profile: IProfile) => {
     const encodedUrl = encodeURIComponent(profile.mobileUrl);

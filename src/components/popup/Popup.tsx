@@ -36,6 +36,14 @@ const StPopUp = styled.div`
   }
 `;
 
+const StImageWrapper = styled.div`
+  aspect-ratio: 328 / 371;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
 const StButton = styled.div`
   display: flex;
   flex-direction: row;
@@ -59,17 +67,28 @@ const Popup = () => {
   return (
     <ModalPortal>
       <StPopUp role="dialog">
-        <picture>
-          <source
-            srcSet="/assets/popup/desktop.png"
-            media="(min-width:1920px)"
-          />
-          <source srcSet="/assets/popup/tablet.png" media="(min-width:768px)" />
-          <img
-            src="/assets/popup/mobile.png"
-            alt="기대해 재미 가득한 라인업 광고 팝업"
-          />
-        </picture>
+        <StImageWrapper>
+          <picture>
+            <source
+              srcSet="/assets/popup/desktop.png"
+              media="(min-width:1920px)"
+              width={558}
+              height={663}
+            />
+            <source
+              srcSet="/assets/popup/tablet.png"
+              media="(min-width:768px)"
+              width={328}
+              height={371}
+            />
+            <img
+              src="/assets/popup/mobile.png"
+              alt="기대해 재미 가득한 라인업 광고 팝업"
+              width={252}
+              height={284}
+            />
+          </picture>
+        </StImageWrapper>
         <StButton>
           <button type="button" onClick={dayClose}>
             오늘 하루 보지 않기

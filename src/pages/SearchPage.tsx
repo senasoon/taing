@@ -14,7 +14,6 @@ import Carousel from '@/components/carousel/Carousel';
 import useReadSearchData from '@/firebase/firestore/useReadSearchData';
 import { StSearchInput } from '@/styles/SearchBarStyles';
 import Svg from '@/components/svg/Svg';
-import SkeletonCarousel from '@/components/loading/SkeletonCarousel';
 import { Helmet } from 'react-helmet-async';
 
 const StLayout = styled.div`
@@ -100,12 +99,15 @@ const SearchPage = () => {
       <StMessage>{countSearchData > 0 ? resultMessage : noMessage}</StMessage>
       <StCarouselLayout>
         {tvPrograms.length > 0 && (
-          <Carousel title="TV프로그램" dataProp={tvPrograms} count={true} />
+          <Carousel
+            carouselTitle="TV프로그램"
+            dataProp={tvPrograms}
+            count={true}
+          />
         )}
         {movies.length > 0 && (
-          <Carousel title="영화" dataProp={movies} count={true} />
+          <Carousel carouselTitle="영화" dataProp={movies} count={true} />
         )}
-        {isLoading && <SkeletonCarousel />}
       </StCarouselLayout>
     </>
   );
